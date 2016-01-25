@@ -103,5 +103,4 @@ export function postMessage(message, callback) {
   return new Promise( resolve =>
       setTimeout(() => resolve(result), NETWORK_LATENCY)
     )
-   
 };

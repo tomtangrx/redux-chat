@@ -6,6 +6,34 @@ import { requestRawMessages, showCongratulation,receiveAll,createMessage,receive
 
 import {getMessages,postMessage } from '../ChatExampleDataServer';
 
+var primus = new Primus(undefined,
+      { 
+        reconnect: {
+          max: Infinity // Number: The max delay before we try to reconnect.    
+          , min: 500 // Number: The minimum delay before we try reconnect.    
+          , retries: 10 // Number: How many times we shoult try to reconnect.  
+        }
+      }
+    );
+primus.on('data', function received(data) {
+  console.log(data);
+  /*
+  if(data.type ==="all"){
+    receiveAllDataFromServer(data.messages);
+  }
+  */
+});
+
+primus.on('allMsg', function received(data) {
+  console.log(data);
+  receiveAllDataFromServer(data);
+});
+
+
+function receiveAllDataFromServer(messages){
+   window.chatStore.dispatch(receiveAll(messages));
+}
+
 function convertRawMessage(rawMessage, currentThreadID) {
   return {
     ...rawMessage,
@@ -39,24 +67,26 @@ export function* getAllMessages() {
   while(yield take(ActionTypes.GET_ALL_MESSAGES)) {
     // dispatch RAW_MESSAGES_REQUEST
     //yield put(requestRawMessages());
-    const messages = yield call(getMessages);
-    console.log(messages);
-    yield put(receiveAll(messages));
+    //const messages = yield call(getMessages);
+    //console.log(messages);
+    primus.emit('getAll');
+    // yield put(receiveAll(messages));
   }
-
 }
 
 export function* postNewMessage() {
   while(true){
       const {text, currentThreadID} = yield take(ActionTypes.POST_NEW_MESSAGE);
       let message = yield call(getCreatedMessageData, text, currentThreadID );
-
-      yield put(createMessage(message));
-      const createdMessage = yield call(postMessage, message)
-      yield put(receiveCreatedMessage(createdMessage, message.id));
+      // primus.write(message);
+      primus.emit('sendMsg', message);
+      
+      //yield put(createMessage(message));
+      //const createdMessage = yield call(postMessage, message)
+      //yield put(receiveCreatedMessage(createdMessage, message.id));
   }
 }
- 
+
 export default function* root() {
   yield fork(getAllMessages);
   yield fork(postNewMessage);

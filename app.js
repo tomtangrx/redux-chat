@@ -8,9 +8,8 @@ import * as Actions from './actions';
 import configureStore from './store/configureStore';
 
 const store = configureStore();
-
+window.chatStore = store;
 store.dispatch(Actions.getAllMessages());
-
 render(
 	  <Provider store={store}>
 	    <ChatApp />
