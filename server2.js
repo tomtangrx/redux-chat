@@ -6,7 +6,7 @@ var http = require('http');
 
 var app = new (require('express'))();
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3030);
 
 var compiler = webpack(config)
 app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }))
@@ -124,7 +124,7 @@ function refreshData(){
 		  primus.forward(server, {
 		    emit: ['allMsg', messages]
 		  }, function (err, data) {
-            console.log.apply(console, [].slice.apply(arguments));
+         console.log.apply(console, [].slice.apply(arguments));
       });
 		});
 	});
