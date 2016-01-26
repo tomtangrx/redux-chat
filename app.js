@@ -5,10 +5,15 @@ import {render} from 'react-dom';
 import { Provider } from 'react-redux';
 import ChatApp from './components/ChatApp.react';
 import * as Actions from './actions';
+import {init} from './utils/primus';
 import configureStore from './store/configureStore';
 
 const store = configureStore();
-window.chatStore = store;
+init(store);
+//window.chatStore = store;
+store.subscribe(() =>
+  console.log(store.getState())
+)
 store.dispatch(Actions.getAllMessages());
 render(
 	  <Provider store={store}>

@@ -5,34 +5,7 @@ import * as ActionTypes from '../constants/ChatConstants'
 import { requestRawMessages, showCongratulation,receiveAll,createMessage,receiveCreatedMessage } from '../actions/index';
 
 import {getMessages,postMessage } from '../ChatExampleDataServer';
-
-var primus = new Primus(undefined,
-      { 
-        reconnect: {
-          max: Infinity // Number: The max delay before we try to reconnect.    
-          , min: 500 // Number: The minimum delay before we try reconnect.    
-          , retries: 10 // Number: How many times we shoult try to reconnect.  
-        }
-      }
-    );
-primus.on('data', function received(data) {
-  console.log(data);
-  /*
-  if(data.type ==="all"){
-    receiveAllDataFromServer(data.messages);
-  }
-  */
-});
-
-primus.on('allMsg', function received(data) {
-  console.log(data);
-  receiveAllDataFromServer(data);
-});
-
-
-function receiveAllDataFromServer(messages){
-   window.chatStore.dispatch(receiveAll(messages));
-}
+import {primus} from '../utils/primus'
 
 function convertRawMessage(rawMessage, currentThreadID) {
   return {
