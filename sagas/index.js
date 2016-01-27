@@ -3,8 +3,7 @@ import { take, put, call, fork, race } from 'redux-saga'
 import * as ActionTypes from '../constants/ChatConstants'
 
 import { requestRawMessages, showCongratulation,receiveAll,createMessage,receiveCreatedMessage } from '../actions/index';
-
-import {getMessages,postMessage } from '../ChatExampleDataServer';
+ 
 import {primus} from '../utils/primus'
 
 function convertRawMessage(rawMessage, currentThreadID) {

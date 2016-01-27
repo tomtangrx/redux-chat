@@ -1,21 +1,21 @@
 var path = require('path')
-var webpack = require('webpack') 
+var webpack = require('webpack')
+
 module.exports = {
-  //devtool: 'cheap-module-eval-source-map',
-  entry: {
-    common:['react','react-dom','react-redux','redux','lodash'],
-    app:'./app.js'
-  },
+  devtool: 'cheap-module-eval-source-map',
+  entry: [
+    'webpack-hot-middleware/client',
+    './app.js'
+  ],
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name].js',
-    publicPath: '/bundle/'
+    filename: 'bundle.js',
+    publicPath: '/static/'
   },
   plugins: [
-   // new webpack.optimize.OccurenceOrderPlugin(),
-    //new webpack.HotModuleReplacementPlugin(),
-    //new webpack.NoErrorsPlugin(),
-    new webpack.optimize.CommonsChunkPlugin('common', 'common.bundle.js')
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin()
   ],
   module: {
     loaders: [{

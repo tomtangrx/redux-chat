@@ -4,7 +4,8 @@
   "description": "redux saga chat demo",
   "scripts": {
     "start": "node server.js",
-    "start2": "node server2.js"
+    "start2": "node server2.js",
+    "build":"set NODE_ENV=production && webpack --progress --colors --watch"
   },
   "repository": {
     "type": "git",
@@ -53,8 +54,8 @@
     "redux-devtools": "^3.0.0-beta-3",
     "redux-devtools-dock-monitor": "^1.0.0-beta-3",
     "redux-devtools-log-monitor": "^1.0.0-beta-3",
-    "webpack": "^1.9.11",
-    "webpack-dev-middleware": "^1.2.0",
-    "webpack-hot-middleware": "^2.2.0"
+    "webpack": "^1.12.12",
+    "webpack-dev-middleware": "^1.5.1",
+    "webpack-hot-middleware": "^2.6.4"
   }
 }

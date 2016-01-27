@@ -1,8 +1,7 @@
 import * as ActionTypes from '../constants/ChatConstants';
 
 import * as ChatMessageUtils from '../utils/ChatMessageUtils';
-
-import * as ChatExampleDataServer from '../ChatExampleDataServer';
+ 
 
 export function clickThread(threadID) {
   return {
