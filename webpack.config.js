@@ -3,7 +3,7 @@ var webpack = require('webpack')
 module.exports = {
   //devtool: 'cheap-module-eval-source-map',
   entry: {
-    common:['react','react-dom','react-redux','redux','lodash'],
+    common:['babel-polyfill','react','react-dom','react-redux','redux','lodash','redux-saga'],
     app:'./app.js'
   },
   output: {

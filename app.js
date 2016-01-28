@@ -12,7 +12,7 @@ const store = configureStore();
 init(store);
 //window.chatStore = store;
 store.subscribe(() =>
-	{console.log(store.getState())}
+	console.log(store.getState())
 	)
 store.dispatch(Actions.getAllMessages());
 render(

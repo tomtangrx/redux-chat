@@ -9,7 +9,7 @@ npm install
 # 运行
 
 ```cmd
-npm start
+npm run start
 ```
 
 # 分布式例子
