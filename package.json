@@ -18,6 +18,8 @@
   "homepage": "https://github.com/tomtangrx/redux-chat",
   "dependencies": {
     "classnames": "^2.2.3",
+    "engine.io": "^1.6.8",
+    "engine.io-client": "^1.6.8",
     "express": "^4.13.3",
     "history": "^1.17.0",
     "humps": "^1.0.0",

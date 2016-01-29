@@ -102,7 +102,7 @@ var rtg = require('url').parse(process.env.REDISTOGO_URL || 'redis://localhost:6
 var redis = require('redis').createClient(rtg.port, rtg.hostname);
 var Primus = require('primus')
   , primus = new Primus(server, {
-  transformer: 'websockets',
+  transformer: 'engine.io',
   redis: redis
 });
 
