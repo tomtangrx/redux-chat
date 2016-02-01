@@ -1,11 +1,12 @@
 // This file bootstraps the entire application.
 import 'babel-polyfill';
+import  Primus from  "script!./primus.js";
 import React from 'react';
 import {render} from 'react-dom';
 import { Provider } from 'react-redux';
 import ChatApp from './components/ChatApp.react';
 import * as Actions from './actions';
-import {init} from './utils/primus';
+import {init} from './service/primus';
 import configureStore from './store/configureStore';
 
 const store = configureStore();

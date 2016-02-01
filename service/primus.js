@@ -1,3 +1,4 @@
+//import "script!./primus.js";
 import { requestRawMessages, showCongratulation,receiveAll,createMessage,receiveCreatedMessage } from '../actions/index';
 
 export const primus = new Primus(undefined,

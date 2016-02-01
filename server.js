@@ -110,6 +110,8 @@ var Primus = require('primus')
 primus.use('emit', require('primus-emit'));
 primus.use('metroplex', require('metroplex'));
 primus.use('omega-supreme', require('omega-supreme'));
+primus.save(__dirname +'/primus.js');
+
 
 function refreshData(){
 	primus.metroplex.servers(function (err, servers) {

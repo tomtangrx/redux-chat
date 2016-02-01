@@ -3,7 +3,7 @@ var webpack = require('webpack')
 module.exports = {
   //devtool: 'cheap-module-eval-source-map',
   entry: {
-    common:['babel-polyfill','react','react-dom','react-redux','redux','lodash','redux-saga'],
+    common:['script!./primus.js','babel-polyfill','react','react-dom','react-redux','redux','lodash','redux-saga'],
     app:'./app.js'
   },
   output: {
@@ -20,11 +20,12 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: [ 'babel' ],
+      loaders: [ 'babel'],
       exclude: /node_modules/,
       include: __dirname
       
-    }]
+    }
+   ]
   }
 }
 

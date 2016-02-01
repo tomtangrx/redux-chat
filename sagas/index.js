@@ -4,7 +4,7 @@ import * as ActionTypes from '../constants/ChatConstants'
 
 import { requestRawMessages, showCongratulation,receiveAll,createMessage,receiveCreatedMessage } from '../actions/index';
  
-import {primus} from '../utils/primus'
+import {primus} from '../service/primus'
 
 function convertRawMessage(rawMessage, currentThreadID) {
   return {
