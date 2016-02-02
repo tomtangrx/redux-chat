@@ -26,7 +26,6 @@
     "isomorphic-fetch": "^2.1.1",
     "lodash": "^3.10.1",
     "metroplex": "0.0.9",
-    "mongoose": "^4.3.7",
     "normalizr": "^2.0.0",
     "omega-supreme": "^1.0.0",
     "primus": "^4.0.5",
@@ -38,10 +37,7 @@
     "redux": "^3.0.6",
     "redux-logger": "^2.4.0",
     "redux-saga": "^0.5.0",
-    "sockjs": "^0.3.15",
-    "sockjs-client-node": "^1.0.0",
-    "updeep": "^0.12.0",
-    "ws": "^1.0.1"
+    "updeep": "^0.12.0"
   },
   "devDependencies": {
     "babel-core": "^6.4.5",
@@ -53,13 +49,10 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
     "concurrently": "^1.0.0",
-    "express": "^4.13.3",
-    "history": "^1.17.0",
     "react-transform-hmr": "^1.0.1",
     "redux-devtools": "^3.0.1",
     "redux-devtools-dock-monitor": "^1.0.1",
-    "redux-devtools-log-monitor": "^1.0.2",
-    "script-loader": "^0.6.1",
+    "redux-devtools-log-monitor": "^1.0.2", 
     "webpack": "^1.12.12",
     "webpack-dev-middleware": "^1.5.1",
     "webpack-hot-middleware": "^2.6.4"

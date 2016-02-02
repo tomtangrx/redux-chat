@@ -1,11 +1,10 @@
-import { take, put, call, fork, race } from 'redux-saga'
+import { take, put, call, fork, race, cps  } from 'redux-saga'
 
 import * as ActionTypes from '../constants/ChatConstants'
 
 import { requestRawMessages, showCongratulation,receiveAll,createMessage,receiveCreatedMessage } from '../actions/index';
  
 import {primus} from '../service/primus'
-
 function convertRawMessage(rawMessage, currentThreadID) {
   return {
     ...rawMessage,
@@ -24,6 +23,24 @@ function getCreatedMessageData(text, currentThreadID) {
     text: text,
     isRead: true
   };
+};
+
+function readFile(path, callback){
+  var p = new Promise( (resolve,reject) =>{
+        if(path !="error"){
+          resolve("success");
+            //return setTimeout(() => resolve(callback(undefined,"aaaaaaaaa")), 100)
+        }else{
+          reject("error");
+           // return setTimeout(() => reject(callback({error:"测试cps异常"},undefined)), 100)
+        } 
+      }
+    )
+  return p.then(r=> callback(undefined,r)).catch(r=> callback(r,undefined));
+  //return p.then(v=>callback({result=v})).catch(e=>callback({error=e}));
+  
+  //var error = "aaaaaaaaa";
+  //callback(undefined,"aaaaaa");
 };
 
 /*
@@ -51,7 +68,17 @@ export function* postNewMessage() {
       const {text, currentThreadID} = yield take(ActionTypes.POST_NEW_MESSAGE);
       let message = yield call(getCreatedMessageData, text, currentThreadID );
       // primus.write(message);
-      primus.emit('sendMsg', message);
+
+      //try { 
+        let content   = yield cps(readFile, 'error');
+        console.log('content');
+        console.log(content);
+       
+      //} catch(error) {
+      //  console.log('catch');
+       // console.log(error);
+     // }
+        primus.emit('sendMsg', message);
       
       //yield put(createMessage(message));
       //const createdMessage = yield call(postMessage, message)
