@@ -1,16 +1,10 @@
-var webpack = require('webpack')
-var webpackDevMiddleware = require('webpack-dev-middleware')
-var webpackHotMiddleware = require('webpack-hot-middleware')
-var config = require('./webpack.config2')
 var http = require('http');
-
-var app = new (require('express'))();
+var express = require('express');  
+var path = require('path');
+var app = new express();
 // all environments
 app.set('port', process.env.PORT || 3030);
-
-var compiler = webpack(config)
-app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }))
-app.use(webpackHotMiddleware(compiler))
+app.use(express.static(path.join(__dirname, 'dist'))); 
 app.get("/css/chatapp.css", function(req, res) {
   res.sendFile(__dirname + '/css/chatapp.css')
 })
@@ -92,7 +86,7 @@ var messages = [
 var threadNameMap = (function () {
   var map = {};
   messages.forEach(function(){
-  	 map[this.threadID] = this.threadName;
+     map[this.threadID] = this.threadName;
   });
  // messages.forEach(({threadID, threadName}) => {
    
@@ -105,74 +99,56 @@ var threadNameMap = (function () {
  */
 var server = http.createServer(app);
 var rtg = require('url').parse(process.env.REDISTOGO_URL || 'redis://localhost:6379');
-var redis = require('redis').createClient(rtg.port, rtg.hostname);
-var Primus = require('primus')
-  , primus = new Primus(server, {
-  transformer: 'websockets',
-  redis: redis
-});
+//var redis = require('redis').createClient(rtg.port, rtg.hostname);
 
-
-primus.use('emit', require('primus-emit'));
-primus.use('metroplex', require('metroplex'));
-primus.use('omega-supreme', require('omega-supreme'));
+var io = require('socket.io')(server);
+var redis = require('socket.io-redis');
+io.adapter(redis({ host: rtg.hostname, port: rtg.port }));
+  
 
 function refreshData(){
-	primus.metroplex.servers(function (err, servers) {
-		console.log('other servers: %d', servers.length, servers);
-		servers.forEach(function (server) {
-		  primus.forward(server, {
-		    emit: ['allMsg', messages]
-		  }, function (err, data) {
-         console.log.apply(console, [].slice.apply(arguments));
+  primus.metroplex.servers(function (err, servers) {
+    console.log('other servers: %d', servers.length, servers);
+    servers.forEach(function (server) {
+      primus.forward(server, {
+        emit: ['allMsg', messages]
+      }, function (err, data) {
+            console.log.apply(console, [].slice.apply(arguments));
       });
-		});
-	});
+    });
+  });
 
-	primus.forEach(function (spark) {
-  		spark.emit('allMsg', messages);
-  	});
+  primus.forEach(function (spark) {
+      spark.emit('allMsg', messages);
+    });
 }
-
-// listen on incoming connection
-primus.on('connection', function(spark) {
-  console.log('connection id', spark.id);
-  spark.on('data', function received(data) {
-    console.log(spark.id, 'received message:', data);
-    spark.write(data+' aaa ');
+io.on('connection', function(socket){
+  socket.on('getAll', function(){
+    io.emit('allMsg', messages);
   });
-  spark.on('getAll',function (){
-	this.emit('allMsg', messages);
+
+  socket.on('sendMsg', function(message){
+    var timestamp = Date.now();
+    var id = 'm_' + timestamp;
+    var threadID = message.threadID;
+    var createdMessage = {
+      id,
+      threadID,
+      threadName: threadNameMap[threadID],
+      authorName: message.authorName,
+      text: message.text,
+      timestamp
+    };
+
+    messages.push(createdMessage);
+    io.emit('allMsg', messages);
   });
-  spark.on('sendMsg', function custom(message) {
 
-	  var timestamp = Date.now();
-	  var id = 'm_' + timestamp;
-	  var threadID = message.threadID;
-
-	  var createdMessage = {
-	    id,
-	    threadID,
-	    threadName: threadNameMap[threadID],
-	    authorName: message.authorName,
-	    text: message.text,
-	    timestamp
-	  };
-
-	  messages.push(createdMessage);
-
-	  refreshData();
-      //this.emit('foo', 'bar');
-  
-  });
-  //var req = spark.request;
-  //console.log(req.session.username);
 });
-
 
 /*
  primus.on('disconnection', function (spark) {
-	console.log('disconnection id', spark.id);
+  console.log('disconnection id', spark.id);
 // the spark that disconnected
 });
 */

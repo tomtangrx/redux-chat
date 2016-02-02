@@ -99,19 +99,12 @@ var threadNameMap = (function () {
  */
 var server = http.createServer(app);
 var rtg = require('url').parse(process.env.REDISTOGO_URL || 'redis://localhost:6379');
-var redis = require('redis').createClient(rtg.port, rtg.hostname);
-var Primus = require('primus')
-  , primus = new Primus(server, {
-  transformer: 'engine.io',
-  redis: redis
-});
+//var redis = require('redis').createClient(rtg.port, rtg.hostname);
 
-
-primus.use('emit', require('primus-emit'));
-primus.use('metroplex', require('metroplex'));
-primus.use('omega-supreme', require('omega-supreme'));
-primus.save(__dirname +'/primus.js');
-
+var io = require('socket.io')(server);
+var redis = require('socket.io-redis');
+io.adapter(redis({ host: rtg.hostname, port: rtg.port }));
+  
 
 function refreshData(){
 	primus.metroplex.servers(function (err, servers) {
@@ -129,42 +122,29 @@ function refreshData(){
   		spark.emit('allMsg', messages);
   	});
 }
-
-// listen on incoming connection
-primus.on('connection', function(spark) {
-  console.log('connection id', spark.id);
-  spark.on('data', function received(data) {
-    console.log(spark.id, 'received message:', data);
-    spark.write(data+' aaa ');
+io.on('connection', function(socket){
+  socket.on('getAll', function(){
+    io.emit('allMsg', messages);
   });
-  spark.on('getAll',function (){
-	this.emit('allMsg', messages);
+
+  socket.on('sendMsg', function(message){
+    var timestamp = Date.now();
+    var id = 'm_' + timestamp;
+    var threadID = message.threadID;
+    var createdMessage = {
+      id,
+      threadID,
+      threadName: threadNameMap[threadID],
+      authorName: message.authorName,
+      text: message.text,
+      timestamp
+    };
+
+    messages.push(createdMessage);
+    io.emit('allMsg', messages);
   });
-  spark.on('sendMsg', function custom(message) {
 
-	  var timestamp = Date.now();
-	  var id = 'm_' + timestamp;
-	  var threadID = message.threadID;
-
-	  var createdMessage = {
-	    id,
-	    threadID,
-	    threadName: threadNameMap[threadID],
-	    authorName: message.authorName,
-	    text: message.text,
-	    timestamp
-	  };
-
-	  messages.push(createdMessage);
-
-	  refreshData();
-      //this.emit('foo', 'bar');
-  
-  });
-  //var req = spark.request;
-  //console.log(req.session.username);
 });
-
 
 /*
  primus.on('disconnection', function (spark) {

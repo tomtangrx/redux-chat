@@ -4,7 +4,7 @@ import * as ActionTypes from '../constants/ChatConstants'
 
 import { requestRawMessages, showCongratulation,receiveAll,createMessage,receiveCreatedMessage } from '../actions/index';
  
-import {primus} from '../service/primus'
+import {io} from '../service/io'
 
 function convertRawMessage(rawMessage, currentThreadID) {
   return {
@@ -41,7 +41,7 @@ export function* getAllMessages() {
     //yield put(requestRawMessages());
     //const messages = yield call(getMessages);
     //console.log(messages);
-    primus.emit('getAll');
+    io.emit('getAll');
     // yield put(receiveAll(messages));
   }
 }
@@ -51,7 +51,7 @@ export function* postNewMessage() {
       const {text, currentThreadID} = yield take(ActionTypes.POST_NEW_MESSAGE);
       let message = yield call(getCreatedMessageData, text, currentThreadID );
       // primus.write(message);
-      primus.emit('sendMsg', message);
+      io.emit('sendMsg', message);
       
       //yield put(createMessage(message));
       //const createdMessage = yield call(postMessage, message)
