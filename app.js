@@ -1,6 +1,6 @@
 // This file bootstraps the entire application.
 import 'babel-polyfill';
-import  Primus from  "script!./primus.js";
+// import  Primus from  "script!./primus.js";
 import React from 'react';
 import {render} from 'react-dom';
 import { Provider } from 'react-redux';
