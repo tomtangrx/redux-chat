@@ -104,25 +104,13 @@ var rtg = require('url').parse(process.env.REDISTOGO_URL || 'redis://localhost:6
 var io = require('socket.io')(server);
 var redis = require('socket.io-redis');
 io.adapter(redis({ host: rtg.hostname, port: rtg.port }));
-  
-
-function refreshData(){
-  primus.metroplex.servers(function (err, servers) {
-    console.log('other servers: %d', servers.length, servers);
-    servers.forEach(function (server) {
-      primus.forward(server, {
-        emit: ['allMsg', messages]
-      }, function (err, data) {
-            console.log.apply(console, [].slice.apply(arguments));
-      });
-    });
-  });
-
-  primus.forEach(function (spark) {
-      spark.emit('allMsg', messages);
-    });
-}
+ 
 io.on('connection', function(socket){
+  socket.join('woot');
+  io.clients(function(error, clients){
+    if (error) throw error;
+    console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB] 
+  });
   socket.on('getAll', function(){
     io.emit('allMsg', messages);
   });
@@ -141,7 +129,8 @@ io.on('connection', function(socket){
     };
 
     messages.push(createdMessage);
-    io.emit('allMsg', messages);
+    io.to('woot').emit('allMsg', messages);
+    //io.emit('allMsg', messages);
   });
 
 });
