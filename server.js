@@ -1,10 +1,27 @@
 var http = require('http');
-var express = require('express');  
+var express = require('express');
 var path = require('path');
 var app = new express();
+var multer = require('multer');
 // all environments
+var upload = multer({ dest: 'uploads/' });
+//var upload = multer({ storage : storage}).single('userPhoto');
+app.post('/api/photo',upload.single('userPhoto'),function(req,res,next){
+    console.log(req.body);
+    console.log(req.files);
+    res.end("File is uploaded");
+    /*upload(req,res,function(err) {
+        if(err) {
+            return res.end("Error uploading file.");
+        }
+        res.end("File is uploaded");
+    });*/
+});
+app.get('/indexupload',function(req,res){
+    res.sendFile(__dirname + "/indexupload.html");
+});
 app.set('port', process.env.PORT || 3000);
-app.use(express.static(path.join(__dirname, 'dist'))); 
+app.use(express.static(path.join(__dirname, 'dist')));
 app.get("/css/chatapp.css", function(req, res) {
   res.sendFile(__dirname + '/css/chatapp.css')
 })
@@ -89,7 +106,7 @@ var threadNameMap = (function () {
   	 map[this.threadID] = this.threadName;
   });
  // messages.forEach(({threadID, threadName}) => {
-   
+
  // });
   return map;
 })();
@@ -109,12 +126,12 @@ io.on('connection', function(socket){
   socket.join('woot');
   io.clients(function(error, clients){
     if (error) throw error;
-    console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB] 
+    console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB]
   });
   socket.on('getAll', function(){
     io.emit('allMsg', messages);
   });
-  
+
   socket.on('sendMsg', function(message){
     var timestamp = Date.now();
     var id = 'm_' + timestamp;
@@ -148,5 +165,5 @@ server.listen(app.get('port'), function(error){
     console.error(error)
   } else {
     console.log('Express server listening on port ' + app.get('port'));
-  } 
+  }
 });

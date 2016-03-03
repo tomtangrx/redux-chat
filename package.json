@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "redux saga chat demo",
   "scripts": {
-    "start": "node --harmony server.js",
-    "start2": "node --harmony server2.js",
+    "start": "node server.js",
+    "start2": "node server2.js",
     "build": "set NODE_ENV=production && webpack --progress --colors --watch"
   },
   "repository": {
@@ -23,6 +23,7 @@
     "humps": "^1.0.0",
     "isomorphic-fetch": "^2.1.1",
     "lodash": "^3.10.1",
+    "multer": "^1.1.0",
     "normalizr": "^2.0.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
@@ -35,7 +36,8 @@
     "socket.io-client": "^1.4.5",
     "socket.io-emitter": "^1.0.0",
     "socket.io-redis": "^1.0.0",
-    "updeep": "^0.12.0"
+    "updeep": "^0.12.0",
+    "whatwg-fetch": "^0.11.0"
   },
   "devDependencies": {
     "babel-core": "^6.4.5",
